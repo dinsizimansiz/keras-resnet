@@ -101,5 +101,5 @@ def main(args = None):
 
     model.evaluate(x_train,y_train)
 
-if "__name__" == "__main__":
+if __name__ == "__main__":
     main()
