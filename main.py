@@ -13,14 +13,13 @@ from keras.callbacks import ReduceLROnPlateau, CSVLogger, EarlyStopping
 from sys import argv
 import numpy as np
 import resnet
-
-
+import utils
 
 def parseArgs(args):
     parser = argParser()
     
     parser.add_argument("--data-augmentation",action="store_true")
-    parser.add_argument("--image-size",default="1600")
+    parser.add_argument("--image-size",default="1200")
     
     
     
@@ -37,7 +36,8 @@ def main(args = None):
 
     
     print("sex")
-    imagesPath = "./rulo/valid"
+    ruloPath = "./rulo/valid"
+    normalPath = "./normal/valid"
     if args.image_size:
         img_rows = int(args.image_size)
         img_cols = int(int(args.image_size)*4/3)
@@ -53,9 +53,14 @@ def main(args = None):
 
     img_channels = 3
 
+    
+    ruloTest,ruloTrain = utils.partition(utils.getAllFiles(ruloPath))
 
+    normalTest,normalTrain = utils.partition(utils.getAllFiles(normalPath))
+    
+    x_train = ruloTest
 
-    model = resnet.ResnetBuilder.build_resnet_18((img_channels, img_rows, img_cols), 2)
+    model = resnet.ResnetBuilder.build_resnet_18((img_channels, img_rows, img_cols), nb_classes)
     model.compile(loss='categorical_crossentropy',
                 optimizer='adam',
                 metrics=['accuracy'])
