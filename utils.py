@@ -2,7 +2,7 @@ import os
 import cv2
 def partition(lst, n = 2): 
     from random import shuffle
-    shuffle(lst,random=13)
+    shuffle(lst)
     division = len(lst) / float(n) 
     return tuple([ lst[int(round(division * i)): int(round(division * (i + 1)))] for i in range(n) ])
     
@@ -16,14 +16,14 @@ def labelize(lst:list,label):
 
 
 def load_img(path):
-    
-    return cv2.imread(path)
+    #os.getcwd()
+    return cv2.imread("/"+path)
 
 def load_data_from_folder(path):
     nameOfImages = os.listdir(path)
     data = []
     for picName in nameOfImages:
-        absPath = os.path.join(os.getcwd(),picName)
+        absPath = os.path.join(os.getcwd(),path,picName)
         imgData = load_img(absPath)
         data.append(imgData)
     return data
@@ -43,7 +43,7 @@ def merge_data(pathList:list,labelList:list):
     pairs = []
     for path,label in zip(pathList,labelList):
         loaded_data = load_data(path,label)
-        pairs = list(pairs,loaded_data)
+        pairs = list(pairs + loaded_data)
     return pairs
 
 
