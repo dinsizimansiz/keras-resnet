@@ -54,8 +54,13 @@ def merge_data(pathList:list,labelList:list):
 #
 def load_all_datas(pathList,labelList):
     merged_data = merge_data(pathList,labelList)
-    return partition(merged_data)    
+    test,train = partition(merged_data)    
+    x_test = y_test = x_train = y_train = []
+    for arr,label in test:
+        x_test.append(arr)
+        y_test.append(label)
+    for arr,label in train:
+        x_train.append(arr)
+        y_train.append(label)
     
-    
-    
-    
+    return (x_train,y_train,x_test,y_test)
