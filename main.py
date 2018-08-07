@@ -43,7 +43,7 @@ def main(args = None):
         img_rows = int(args.image_size)
         img_cols = int(int(args.image_size)*4/3)
     
-    modelCheckpoint = ModelCheckpoint("./chkpt")
+    modelCheckpoint = ModelCheckpoint("./checkpoint")
     lr_reducer = ReduceLROnPlateau(factor=np.sqrt(0.1), cooldown=0, patience=5, min_lr=0.5e-6)
     early_stopper = EarlyStopping(min_delta=0.00001, patience=20)
     tensorboard = TensorBoard()
@@ -95,7 +95,7 @@ def main(args = None):
                             steps_per_epoch=len(x_train) // batch_size,
                             validation_data=(x_test, y_test),
                             epochs=nb_epoch, verbose=1, max_queue_size=100,
-                            callbacks=[lr_reducer, early_stopper,tensorboard])
+                            callbacks=[lr_reducer, early_stopper,tensorboard,modelCheckpoint])
 
     model.evaluate(x_train,y_train)
 
