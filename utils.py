@@ -60,7 +60,8 @@ def load_all_datas(pathList,labelList):
     y_test = list()
     x_train = list()
     y_train = list()
-    
+    test = test[0]
+    train = train[0]
     for arr,label in test:
         x_test.append(arr)
         y_test.append(label)
