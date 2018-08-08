@@ -43,6 +43,7 @@ def main(args = None):
         img_rows = int(args.image_size)
         img_cols = int(int(args.image_size)*4/3)
     
+    pushToGitCallback = utils.createPushGitCallback()
     modelCheckpoint = ModelCheckpoint("./checkpoint")
     lr_reducer = ReduceLROnPlateau(factor=np.sqrt(0.1), cooldown=0, patience=5, min_lr=0.5e-6)
     early_stopper = EarlyStopping(min_delta=0.00001, patience=20)
