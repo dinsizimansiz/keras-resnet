@@ -59,7 +59,7 @@ def load_all_datas(pathList,labelList):
     y_test = list()
     x_train = list()
     y_train = list()
-
+    
     for arr,label in test:
         x_test.append(arr.astype("float32"))
         y_test.append(label)
