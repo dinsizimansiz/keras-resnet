@@ -46,7 +46,7 @@ def main(args = None):
     modelCheckpoint = ModelCheckpoint("./checkpoint")
     lr_reducer = ReduceLROnPlateau(factor=np.sqrt(0.1), cooldown=0, patience=5, min_lr=0.5e-6)
     early_stopper = EarlyStopping(min_delta=0.00001, patience=20)
-    tensorboard = TensorBoard()
+    #tensorboard = TensorBoard()
 
     batch_size = 32
     nb_classes = 2
@@ -70,7 +70,7 @@ def main(args = None):
                 nb_epoch=nb_epoch,
                 validation_data=(x_test, y_test),
                 shuffle=True,
-                callbacks=[lr_reducer, early_stopper])
+                callbacks=[lr_reducer, early_stopper,modelCheckpoint])
     else:
         print('Using real-time data augmentation.')
         # This will do preprocessing and realtime data augmentation:
@@ -95,7 +95,7 @@ def main(args = None):
                             steps_per_epoch=len(x_train) // batch_size,
                             validation_data=(x_test, y_test),
                             epochs=nb_epoch, verbose=1, max_queue_size=100,
-                            callbacks=[lr_reducer, early_stopper,tensorboard,modelCheckpoint])
+                            callbacks=[lr_reducer, early_stopper,modelCheckpoint])
 
     model.evaluate(x_train,y_train)
 
