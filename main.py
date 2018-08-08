@@ -58,7 +58,7 @@ def main(args = None):
     
     x_train,y_train,x_test,y_test = utils.load_all_datas(paths,labels)
     
-    model = resnet.ResnetBuilder.build_resnet_18((img_channels, img_rows, img_cols), nb_classes)
+    model = resnet.ResnetBuilder.build_resnet_18((3, 1200, 1600), nb_classes)
     model.compile(loss='categorical_crossentropy',
                 optimizer='adam',
                 metrics=['accuracy'])
@@ -67,7 +67,7 @@ def main(args = None):
         print('Not using data augmentation.')
         model.fit(x_train, y_train,
                 batch_size=batch_size,
-                nb_epoch=nb_epoch,
+                epochs=nb_epoch,
                 validation_data=(x_test, y_test),
                 shuffle=True,
                 callbacks=[lr_reducer, early_stopper,modelCheckpoint])
