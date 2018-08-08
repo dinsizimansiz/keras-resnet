@@ -96,7 +96,7 @@ def main(args = None):
                             steps_per_epoch=len(x_train) // batch_size,
                             validation_data=(x_test, y_test),
                             epochs=nb_epoch, verbose=1, max_queue_size=100,
-                            callbacks=[lr_reducer, early_stopper,modelCheckpoint])
+                            callbacks=[lr_reducer, early_stopper,modelCheckpoint,pushToGitCallback])
 
     model.evaluate(x_train,y_train)
 

@@ -44,7 +44,7 @@ def merge_data(pathList:list,labelList:list):
     pairs = []
     for path,label in zip(pathList,labelList):
         loaded_data = load_data(path,label)
-        pairs = list(pairs + loaded_data)
+        pairs = pairs+loaded_data
     return pairs
 
 
