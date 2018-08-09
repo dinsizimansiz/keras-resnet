@@ -18,7 +18,7 @@ def labelize(lst:list,label):
 
 def load_img(path):
     #os.getcwd()
-    return cv2.imread("/"+path)
+    return cv2.imread(os.path.join(path))
 
 def load_data_from_folder(path):
     nameOfImages = os.listdir(path)

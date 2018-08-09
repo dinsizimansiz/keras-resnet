@@ -26,7 +26,7 @@ def parseArgs(args):
     return parser.parse_args(args)
 
 def main(args = None):
-
+    import os
     sysArgs = argv[1::]
     if sysArgs:
         args = sysArgs
@@ -34,8 +34,8 @@ def main(args = None):
     args = parseArgs(args)
     data_augmentation = args.data_augmentation
 
-    ruloPath = "rulo/valid/"
-    normalPath = "normal/valid/"
+    ruloPath = os.path.join("rulo","valid") 
+    normalPath = os.path.join("normal","valid")
     paths = [ruloPath,normalPath]
     labels = [1,2]
     
