@@ -29,7 +29,7 @@ def load_data_from_folder(path):
         data.append(imgData)
     return data
 
-def load_data(path,label):
+def load_data(path):
     data = load_data_from_folder(path)
     return labelize(data,label)
 
@@ -43,8 +43,7 @@ def load_data(path,label):
 def merge_data(pathList:list,labelList:list):
     pairs = []
     for path,label in zip(pathList,labelList):
-        loaded_data = load_data(path,label)
-        pairs.append(loaded_data)
+        pairs += load_data(path,label)
     return pairs
 
 
@@ -54,23 +53,16 @@ def merge_data(pathList:list,labelList:list):
 #
 #
 def load_all_datas(pathList,labelList):
-    merged_data = merge_data(pathList,labelList)
-    test,train = partition(merged_data)    
-    x_test = list()
-    y_test = list()
-    x_train = list()
-    y_train = list()
-    test = test[0]
-    train = train[0]
-    for arr,label in test:
-        x_test.append(arr)
-        y_test.append(label)
-    for arr,label in train:
-        x_train.append(arr)
-        y_train.append(label)
-    
-    return (x_train,y_train,x_test,y_test)
+    X = []
+    Y = []
+    for path,label in zip(pathList,labelList):
+        loadedData = load_data_from_folder(path)
+        X.append(loadedData)
+        for _ in range(len(loadedData)):
+            Y.append(label)
 
+    from sklearn.model_selection import train_test_split 
+    return train_test_split(X,Y)
 
 createPushGitCallback = lambda : PushGitCallback()
   

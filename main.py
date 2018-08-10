@@ -8,7 +8,7 @@ GPU run command with Theano backend (with TensorFlow, the GPU is automatically u
 from __future__ import print_function
 from argparse import ArgumentParser as argParser
 from keras.preprocessing.image import ImageDataGenerator
-from keras.utils import np_utils
+from keras.utils import to_categorical
 from keras.callbacks import ReduceLROnPlateau, CSVLogger, EarlyStopping ,TensorBoard , ModelCheckpoint
 from sys import argv
 import numpy as np
@@ -56,10 +56,15 @@ def main(args = None):
 
     img_channels = 3
 
+    x_train,x_test,y_train,y_test = utils.load_all_datas(paths,labels)
+    #d = utils.load_all_datas(paths,labels)
+    #x_train = np.array(x_train)
+    #x_test = np.array(x_test)
+    #y_train = to_categorical(y_train)
+    #y_test = to_categorical(y_test)
     
-    x_train,y_train,x_test,y_test = utils.load_all_datas(paths,labels)
     
-    model = resnet.ResnetBuilder.build_resnet_18((3, 1200, 1600), nb_classes)
+    model = resnet.ResnetBuilder.build_resnet_50((3, 1200, 1600), nb_classes)
     model.compile(loss='categorical_crossentropy',
                 optimizer='adam',
                 metrics=['accuracy'])
