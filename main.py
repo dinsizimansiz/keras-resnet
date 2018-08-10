@@ -46,7 +46,7 @@ def main(args=None):
     early_stopper = EarlyStopping(min_delta=0.00001, patience=20)
     # tensorboard = TensorBoard()
 
-    batch_size = 32
+    batch_size = 1
     nb_classes = 2
     nb_epoch = 200
 
@@ -65,12 +65,12 @@ def main(args=None):
 
     eval_datagen = ImageDataGenerator()
 
-    model = resnet.ResnetBuilder.build_resnet_50((3, 1200, 1600), 2)
-    model.compile(loss='categorical_crossentropy',
+    model = resnet.ResnetBuilder.build_resnet_18((3, 1200, 1600), 1)
+    model.compile(loss='binary_crossentropy',
                   optimizer='adam',
                   metrics=['accuracy'])
 
-    train_generator = train_datagen.flow_from_directory(trainPath, target_size=(1200, 1600), class_mode="binary")
+    train_generator = train_datagen.flow_from_directory(trainPath, target_size=(1200, 1600), class_mode="binary", batch_size=batch_size)
     eval_generator = eval_datagen.flow_from_directory(trainPath, target_size=(1200, 1600), class_mode="binary")
     model.fit_generator(train_generator, steps_per_epoch=3, epochs=300, validation_data=eval_generator,
                         validation_steps=2, callbacks=[early_stopper, lr_reducer, modelCheckpoint])
