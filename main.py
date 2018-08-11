@@ -68,6 +68,8 @@ def main(args=None):
 		vertical_flip=False)  # randomly flip images
 
 	eval_datagen = ImageDataGenerator()
+	train_generator = train_datagen.flow_from_directory(trainPath, target_size=imageSize, class_mode="categorical", batch_size=batch_size)
+	eval_generator = eval_datagen.flow_from_directory(evalPath, target_size=imageSize, class_mode="categorical")
 
 	
 	optimizer = Adam(lr=0.00001, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
