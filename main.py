@@ -10,6 +10,7 @@ import tensorboard
 from argparse import ArgumentParser as argParser
 from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import ReduceLROnPlateau, CSVLogger, EarlyStopping, TensorBoard, ModelCheckpoint
+from keras.models import load_model
 from sys import argv
 import numpy as np
 import resnet
@@ -21,7 +22,7 @@ def parseArgs(args):
 
 	parser.add_argument("--data-augmentation", action="store_true")
 	parser.add_argument("--image-size", default="1200")
-
+	parser.add_argument("--loadmodel",action="store_true")
 	return parser.parse_args(args)
 
 
@@ -36,13 +37,13 @@ def main(args=None):
 
 	evalPath = os.path.join("images", "eval")
 	trainPath = os.path.join("images", "train")
-
+	
 	if args.image_size:
 		img_rows = int(args.image_size)
 		img_cols = int(int(args.image_size) * 4 / 3)
 
 	pushToGitCallback = utils.createPushGitCallback()
-	modelCheckpoint = ModelCheckpoint("./checkpoint")
+	modelCheckpoint = ModelCheckpoint("./checkpoint",verbose=1)
 	lr_reducer = ReduceLROnPlateau(factor=np.sqrt(0.1), cooldown=0, patience=5, min_lr=0.5e-6)
 	early_stopper = EarlyStopping(min_delta=0.00001, patience=20)
 	board = TensorBoard(log_dir=os.path.join("tensorlog"),histogram_freq=1,write_graph=True)
@@ -69,18 +70,19 @@ def main(args=None):
 
 	import keras
 	optimizer = keras.optimizers.Adam(lr=0.00001, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
+	if not args.loadmodel:
+		model = resnet.ResnetBuilder.build_resnet_50((3, *imageSize), 2)
+		model.compile(loss='mean_squared_error',
+					  optimizer=optimizer,
+					  metrics=['acc'])
 
-	model = resnet.ResnetBuilder.build_resnet_50((3, *imageSize), 2)
-	model.compile(loss='mean_squared_error',
-				  optimizer=optimizer,
-				  metrics=['acc'])
-
-	train_generator = train_datagen.flow_from_directory(trainPath, target_size=imageSize, class_mode="categorical", batch_size=batch_size)
-	eval_generator = eval_datagen.flow_from_directory(evalPath, target_size=imageSize, class_mode="categorical")
-	model.fit_generator(train_generator, steps_per_epoch=2, epochs=300, validation_data=eval_generator,
-						validation_steps=20, callbacks=[pushToGitCallback,modelCheckpoint])#early_stopper, lr_reducer, modelCheckpoint
-   
-
+		model.fit_generator(train_generator, steps_per_epoch=2, epochs=300, validation_data=eval_generator,
+							validation_steps=20, callbacks=[pushToGitCallback,modelCheckpoint])#early_stopper, lr_reducer, modelCheckpoint
+	else:
+		model = load_model("./checkpoint")
+		model.fit_generator(train_generator, steps_per_epoch=2, epochs=300, validation_data=eval_generator,
+							validation_steps=20, callbacks=[pushToGitCallback,modelCheckpoint])#early_stopper, lr_reducer, modelCheckpoint
+	
 
 if __name__ == "__main__":
 	main()
