@@ -81,6 +81,8 @@ def main(args=None):
 
 		model.fit_generator(train_generator, steps_per_epoch=2, epochs=300, validation_data=eval_generator,
 							validation_steps=20, callbacks=[pushToGitCallback,modelCheckpoint])#early_stopper, lr_reducer, modelCheckpoint
+	
+		
 	else:
 		try:
 
@@ -88,7 +90,14 @@ def main(args=None):
 			model.fit_generator(train_generator, steps_per_epoch=2, epochs=300, validation_data=eval_generator,
 							validation_steps=20, callbacks=[pushToGitCallback,modelCheckpoint])#early_stopper, lr_reducer, modelCheckpoint
 		except:
-			print("You are at",os.getcwd(),"and these are the directories : ",os.listdir("."))
+			model = resnet.ResnetBuilder.build_resnet_50((3, *imageSize), 2)
+			model.compile(loss='mean_squared_error',
+					  optimizer=optimizer,
+					  metrics=['acc'])
 
+			model.fit_generator(train_generator, steps_per_epoch=2, epochs=300, validation_data=eval_generator,
+							validation_steps=20, callbacks=[pushToGitCallback,modelCheckpoint])#early_stopper, lr_reducer, modelCheckpoint
+	
+		
 if __name__ == "__main__":
 	main()
