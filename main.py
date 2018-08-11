@@ -87,7 +87,7 @@ def main(args=None):
 		try:
 
 			model = load_model("./checkpoint")
-			model.fit_generator(train_generator, steps_per_epoch=2, epochs=300, validation_data=eval_generator,
+			model.fit_generator(train_generator, steps_per_epoch=200, epochs=300, validation_data=eval_generator,
 							validation_steps=20, callbacks=[pushToGitCallback,modelCheckpoint])#early_stopper, lr_reducer, modelCheckpoint
 		except:
 			model = resnet.ResnetBuilder.build_resnet_50((3, *imageSize), 2)
@@ -95,7 +95,7 @@ def main(args=None):
 					  optimizer=optimizer,
 					  metrics=['acc'])
 
-			model.fit_generator(train_generator, steps_per_epoch=2, epochs=300, validation_data=eval_generator,
+			model.fit_generator(train_generator, steps_per_epoch=200, epochs=300, validation_data=eval_generator,
 							validation_steps=20, callbacks=[pushToGitCallback,modelCheckpoint])#early_stopper, lr_reducer, modelCheckpoint
 	
 		
