@@ -11,6 +11,7 @@ from argparse import ArgumentParser as argParser
 from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import ReduceLROnPlateau, CSVLogger, EarlyStopping, TensorBoard, ModelCheckpoint
 from keras.models import load_model
+from keras.optimizers import Adam
 from sys import argv
 import numpy as np
 import resnet
@@ -22,7 +23,7 @@ def parseArgs(args):
 
 	parser.add_argument("--data-augmentation", action="store_true")
 	parser.add_argument("--image-size", default="1200")
-	parser.add_argument("--loadmodel",action="store_true")
+	parser.add_argument("--new-training",action="store_true")
 	return parser.parse_args(args)
 
 
@@ -68,9 +69,9 @@ def main(args=None):
 
 	eval_datagen = ImageDataGenerator()
 
-	import keras
-	optimizer = keras.optimizers.Adam(lr=0.00001, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
-	if not args.loadmodel:
+	
+	optimizer = Adam(lr=0.00001, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
+	if args.new_training:
 		model = resnet.ResnetBuilder.build_resnet_50((3, *imageSize), 2)
 		model.compile(loss='mean_squared_error',
 					  optimizer=optimizer,
@@ -79,10 +80,13 @@ def main(args=None):
 		model.fit_generator(train_generator, steps_per_epoch=2, epochs=300, validation_data=eval_generator,
 							validation_steps=20, callbacks=[pushToGitCallback,modelCheckpoint])#early_stopper, lr_reducer, modelCheckpoint
 	else:
-		model = load_model("./checkpoint")
-		model.fit_generator(train_generator, steps_per_epoch=2, epochs=300, validation_data=eval_generator,
+		try:
+
+			model = load_model("./checkpoint")
+			model.fit_generator(train_generator, steps_per_epoch=2, epochs=300, validation_data=eval_generator,
 							validation_steps=20, callbacks=[pushToGitCallback,modelCheckpoint])#early_stopper, lr_reducer, modelCheckpoint
-	
+		except:
+			print("You are at",os.getcwd(),"and these are the directories : ",os.listdir("."))
 
 if __name__ == "__main__":
 	main()
