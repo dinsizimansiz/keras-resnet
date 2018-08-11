@@ -3,6 +3,7 @@ import cv2
 from keras.callbacks import Callback
 
 
+#Util is for google colab.
 
 
 createPushGitCallback = lambda : PushGitCallback()
@@ -34,15 +35,15 @@ def pushToGit():
     try:
         #print('i will push git here')
         import subprocess
-        p1 = subprocess.Popen(['git', 'add', 'checkpoint/*'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                              cwd='/keras-resnet')
+        p1 = subprocess.Popen(['git', 'add', 'checkpoint'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                              cwd='.')
         p1.wait()
-        p2 = subprocess.Popen(['git', 'commit', '-m', "snapshot-update"], stdout=subprocess.PIPE,
+        p2 = subprocess.Popen(['git', 'commit', '-m', "checkpoint updates"], stdout=subprocess.PIPE,
                               stderr=subprocess.STDOUT,
-                              cwd='/keras-resnet')
+                              cwd='.')
         p2.wait()
-        p3 = subprocess.Popen(['git', 'push'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                              cwd='/keras-resnet')
+        p3 = subprocess.Popen(['git', 'push','origin'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                              cwd='.')
         p3.wait()
         #print(p3.communicate(), 'i pushed git here')
     except:
