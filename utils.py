@@ -13,7 +13,7 @@ class PushGitCallback(Callback):
         
         
     def __init__(self):
-        super(PushGitCallback,self)
+        super(PushGitCallback,self).__init__()
     
     
     def on_epoch_end(self, epoch, logs=None):
@@ -34,15 +34,15 @@ def pushToGit():
     try:
         #print('i will push git here')
         import subprocess
-        p1 = subprocess.Popen(['git', 'add', 'snapshots/*'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                              cwd='/content/medikal-ml')
+        p1 = subprocess.Popen(['git', 'add', 'checkpoint/*'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                              cwd='/keras-resnet')
         p1.wait()
         p2 = subprocess.Popen(['git', 'commit', '-m', "snapshot-update"], stdout=subprocess.PIPE,
                               stderr=subprocess.STDOUT,
-                              cwd='/content/medikal-ml')
+                              cwd='/keras-resnet')
         p2.wait()
         p3 = subprocess.Popen(['git', 'push'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                              cwd='/content/medikal-ml')
+                              cwd='/keras-resnet')
         p3.wait()
         #print(p3.communicate(), 'i pushed git here')
     except:

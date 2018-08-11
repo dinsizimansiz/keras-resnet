@@ -77,7 +77,7 @@ def main(args=None):
 
 	train_generator = train_datagen.flow_from_directory(trainPath, target_size=imageSize, class_mode="categorical", batch_size=batch_size)
 	eval_generator = eval_datagen.flow_from_directory(evalPath, target_size=imageSize, class_mode="categorical")
-	model.fit_generator(train_generator, steps_per_epoch=200, epochs=300, validation_data=eval_generator,
+	model.fit_generator(train_generator, steps_per_epoch=2, epochs=300, validation_data=eval_generator,
 						validation_steps=20, callbacks=[pushToGitCallback,modelCheckpoint])#early_stopper, lr_reducer, modelCheckpoint
    
 
