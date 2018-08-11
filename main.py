@@ -49,6 +49,7 @@ def main(args=None):
     batch_size = 1
     nb_classes = 2
     nb_epoch = 200
+    imageSize = (750, 1000)
 
     img_channels = 3
     train_datagen = ImageDataGenerator(
@@ -58,22 +59,25 @@ def main(args=None):
         samplewise_std_normalization=False,  # divide each input by its std
         zca_whitening=False,  # apply ZCA whitening
         rotation_range=0,  # randomly rotate images in the range (degrees, 0 to 180)
-        width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
-        height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
-        horizontal_flip=True,  # randomly flip images
+        width_shift_range=0.,  # randomly shift images horizontally (fraction of total width)
+        height_shift_range=0.,  # randomly shift images vertically (fraction of total height)
+        horizontal_flip=False,#True,  # randomly flip images
         vertical_flip=False)  # randomly flip images
 
     eval_datagen = ImageDataGenerator()
 
-    model = resnet.ResnetBuilder.build_resnet_18((3, 1200, 1600), 1)
-    model.compile(loss='binary_crossentropy',
-                  optimizer='adam',
-                  metrics=['accuracy'])
+    import keras
+    optimizer = keras.optimizers.Adam(lr=0.00001, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
 
-    train_generator = train_datagen.flow_from_directory(trainPath, target_size=(1200, 1600), class_mode="binary", batch_size=batch_size)
-    eval_generator = eval_datagen.flow_from_directory(trainPath, target_size=(1200, 1600), class_mode="binary")
-    model.fit_generator(train_generator, steps_per_epoch=3, epochs=300, validation_data=eval_generator,
-                        validation_steps=2, callbacks=[early_stopper, lr_reducer, modelCheckpoint])
+    model = resnet.ResnetBuilder.build_resnet_50((3, *imageSize), 2)
+    model.compile(loss='mean_squared_error',
+                  optimizer=optimizer,
+                  metrics=['acc'])
+
+    train_generator = train_datagen.flow_from_directory(trainPath, target_size=imageSize, class_mode="categorical", batch_size=batch_size)
+    eval_generator = eval_datagen.flow_from_directory(evalPath, target_size=imageSize, class_mode="categorical")
+    model.fit_generator(train_generator, steps_per_epoch=200, epochs=300, validation_data=eval_generator,
+                        validation_steps=20, callbacks=[])#early_stopper, lr_reducer, modelCheckpoint
     model.save_weights("rasamahram.h5")
 
 
