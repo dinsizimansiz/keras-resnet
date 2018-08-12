@@ -82,7 +82,7 @@ def main(args=None):
 	eval_generator = eval_datagen.flow_from_directory(evalPath, target_size=imageSize, class_mode="categorical")
 
 	
-	optimizer = Adam(lr=0.00001, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
+	optimizer = Adam(lr=learning_rate, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
 	if args.new_training:
 		model = resnet.ResnetBuilder.build_resnet_50((3, *imageSize), 2)
 		model.compile(loss='mean_squared_error',
