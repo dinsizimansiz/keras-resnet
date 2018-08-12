@@ -24,6 +24,8 @@ def parseArgs(args):
 	parser.add_argument("--data-augmentation", action="store_true")
 	parser.add_argument("--image-size", default="1200")
 	parser.add_argument("--new-training",action="store_true")
+	parser.add_argument("--steps",default="200")
+	parser.add_argument("--epochs",default="300")
 	return parser.parse_args(args)
 
 
@@ -33,8 +35,21 @@ def main(args=None):
 	if sysArgs:
 		args = sysArgs
 
+	number_of_steps = 200
+	number_of_epochs = 300
 	args = parseArgs(args)
 	data_augmentation = args.data_augmentation
+
+	if args.steps :
+		number_of_steps = args.steps
+	if not isinstance(number_of_steps,int):
+		raise TypeError("Unexpected Jihad")
+
+	if args.epochs :
+		number_of_epochs = args.epochs
+	if not isinstance(number_of_epochs,int):
+		raise TypeError("Unexpected John Cena")
+
 
 	evalPath = os.path.join("images", "eval")
 	trainPath = os.path.join("images", "train")
@@ -79,7 +94,7 @@ def main(args=None):
 					  optimizer=optimizer,
 					  metrics=['acc'])
 
-		model.fit_generator(train_generator, steps_per_epoch=200, epochs=300, validation_data=eval_generator,
+		model.fit_generator(train_generator, steps_per_epoch=number_of_steps, epochs=number_of_epochs, validation_data=eval_generator,
 							validation_steps=20, callbacks=[pushToGitCallback,modelCheckpoint])#early_stopper, lr_reducer, modelCheckpoint
 	
 		
@@ -87,7 +102,7 @@ def main(args=None):
 		try:
 
 			model = load_model("./checkpoint")
-			model.fit_generator(train_generator, steps_per_epoch=200, epochs=300, validation_data=eval_generator,
+			model.fit_generator(train_generator, steps_per_epoch=number_of_steps, epochs=number_of_epochs, validation_data=eval_generator,
 							validation_steps=20, callbacks=[pushToGitCallback,modelCheckpoint])#early_stopper, lr_reducer, modelCheckpoint
 		except:
 			model = resnet.ResnetBuilder.build_resnet_50((3, *imageSize), 2)
@@ -95,7 +110,7 @@ def main(args=None):
 					  optimizer=optimizer,
 					  metrics=['acc'])
 
-			model.fit_generator(train_generator, steps_per_epoch=200, epochs=300, validation_data=eval_generator,
+			model.fit_generator(train_generator, steps_per_epoch=number_of_steps, epochs=number_of_epochs, validation_data=eval_generator,
 							validation_steps=20, callbacks=[pushToGitCallback,modelCheckpoint])#early_stopper, lr_reducer, modelCheckpoint
 	
 		
