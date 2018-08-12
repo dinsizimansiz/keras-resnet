@@ -27,7 +27,7 @@ def parseArgs(args):
 	parser.add_argument("--steps",default="200")
 	parser.add_argument("--epochs",default="300")
 	parser.add_argument("--learning-rate",default="0.00001",aliases=["--lr"])
-	parser.add_argument("--git-push",action="store_true",alises=["--gitpush"])
+	parser.add_argument("--git-push",action="store_true",aliases=["--gitpush"])
 	return parser.parse_args(args)
 
 
