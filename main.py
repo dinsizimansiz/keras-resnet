@@ -57,7 +57,7 @@ def main(args=None):
 		img_cols = int(int(args.image_size) * 4 / 3)
 
 	pushToGitCallback = utils.createPushGitCallback()
-	modelCheckpoint = ModelCheckpoint("./checkpoint",verbose=1)
+	modelCheckpoint = ModelCheckpoint("./checkpoint/model_ckpt.sikme",verbose=1)
 	lr_reducer = ReduceLROnPlateau(factor=np.sqrt(0.1), cooldown=0, patience=5, min_lr=0.5e-6)
 	early_stopper = EarlyStopping(min_delta=0.00001, patience=20)
 	board = TensorBoard(log_dir=os.path.join("tensorlog"),histogram_freq=1,write_graph=True)
@@ -99,7 +99,7 @@ def main(args=None):
 	else:
 		try:
 
-			model = load_model("./checkpoint")
+			model = load_model("./checkpoint/model_ckpt.sikme")
 			model.fit_generator(train_generator, steps_per_epoch=number_of_steps, epochs=number_of_epochs, validation_data=eval_generator,
 							validation_steps=20, callbacks=[modelCheckpoint,pushToGitCallback])#early_stopper, lr_reducer, modelCheckpoint
 		except:
