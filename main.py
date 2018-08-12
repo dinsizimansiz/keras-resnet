@@ -26,6 +26,7 @@ def parseArgs(args):
 	parser.add_argument("--new-training",action="store_true")
 	parser.add_argument("--steps",default="200")
 	parser.add_argument("--epochs",default="300")
+	parser.add_argument("--learning-rate",default="0.00001",aliases=["--lr"])
 	return parser.parse_args(args)
 
 
@@ -35,19 +36,15 @@ def main(args=None):
 	if sysArgs:
 		args = sysArgs
 
-	number_of_steps = 200
-	number_of_epochs = 300
+	
 	args = parseArgs(args)
 	data_augmentation = args.data_augmentation
-
-	if args.steps :
-		number_of_steps = int(args.steps)
+	learning_rate = int(args.learning_rate)
+	number_of_steps = int(args.steps)
+	number_of_epochs = int(args.epochs)
 	
-
-	if args.epochs :
-		number_of_epochs = int(args.epochs)
 	
-
+	
 
 	evalPath = os.path.join("images", "eval")
 	trainPath = os.path.join("images", "train")
