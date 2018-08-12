@@ -27,6 +27,7 @@ def parseArgs(args):
 	parser.add_argument("--steps",default="200")
 	parser.add_argument("--epochs",default="300")
 	parser.add_argument("--learning-rate",default="0.00001",aliases=["--lr"])
+	parser.add_argument("--git-push",action="store_true",alises=["--gitpush"])
 	return parser.parse_args(args)
 
 
@@ -58,7 +59,10 @@ def main(args=None):
 	lr_reducer = ReduceLROnPlateau(factor=np.sqrt(0.1), cooldown=0, patience=5, min_lr=0.5e-6)
 	early_stopper = EarlyStopping(min_delta=0.00001, patience=20)
 	board = TensorBoard(log_dir=os.path.join("tensorlog"),histogram_freq=1,write_graph=True)
+	callbacks = [modelCheckpoint]
 
+	if args.git_push:
+		callbacks.append(pushToGitCallback)
 	batch_size = 1
 	nb_classes = 2
 	nb_epoch = 200
@@ -90,7 +94,7 @@ def main(args=None):
 					  metrics=['acc'])
 
 		model.fit_generator(train_generator, steps_per_epoch=number_of_steps, epochs=number_of_epochs, validation_data=eval_generator,
-							validation_steps=20, callbacks=[modelCheckpoint])#early_stopper, lr_reducer, modelCheckpoint
+							validation_steps=20, callbacks=callbacks)#early_stopper, lr_reducer, modelCheckpoint
 	
 		
 	else:
@@ -98,7 +102,7 @@ def main(args=None):
 
 			model = load_model(os.path.join(".","checkpoint","model_ckpt.sikme"))
 			model.fit_generator(train_generator, steps_per_epoch=number_of_steps, epochs=number_of_epochs, validation_data=eval_generator,
-							validation_steps=20, callbacks=[modelCheckpoint])#early_stopper, lr_reducer, modelCheckpoint
+							validation_steps=20, callbacks=callbacks)#early_stopper, lr_reducer, modelCheckpoint
 		except:
 			model = resnet.ResnetBuilder.build_resnet_50((3, *imageSize), 2)
 			model.compile(loss='mean_squared_error',
@@ -106,7 +110,7 @@ def main(args=None):
 					  metrics=['acc'])
 
 			model.fit_generator(train_generator, steps_per_epoch=number_of_steps, epochs=number_of_epochs, validation_data=eval_generator,
-							validation_steps=20, callbacks=[modelCheckpoint])#early_stopper, lr_reducer, modelCheckpoint
+							validation_steps=20, callbacks=callbacks)#early_stopper, lr_reducer, modelCheckpoint
 	
 		
 if __name__ == "__main__":
