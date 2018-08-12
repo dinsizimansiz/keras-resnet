@@ -41,14 +41,12 @@ def main(args=None):
 	data_augmentation = args.data_augmentation
 
 	if args.steps :
-		number_of_steps = args.steps
-	if not isinstance(number_of_steps,int):
-		raise TypeError("Unexpected Jihad")
+		number_of_steps = int(args.steps)
+	
 
 	if args.epochs :
-		number_of_epochs = args.epochs
-	if not isinstance(number_of_epochs,int):
-		raise TypeError("Unexpected John Cena")
+		number_of_epochs = int(args.epochs)
+	
 
 
 	evalPath = os.path.join("images", "eval")
