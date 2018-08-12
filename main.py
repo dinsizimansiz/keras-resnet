@@ -40,7 +40,7 @@ def main(args=None):
 	
 	args = parseArgs(args)
 	data_augmentation = args.data_augmentation
-	learning_rate = int(args.learning_rate)
+	learning_rate = int(args.lr)
 	number_of_steps = int(args.steps)
 	number_of_epochs = int(args.epochs)
 	
@@ -61,7 +61,7 @@ def main(args=None):
 	board = TensorBoard(log_dir=os.path.join("tensorlog"),histogram_freq=1,write_graph=True)
 	callbacks = [modelCheckpoint]
 
-	if args.git_push:
+	if args.gitpush:
 		callbacks.append(pushToGitCallback)
 	batch_size = 1
 	nb_classes = 2
@@ -86,7 +86,7 @@ def main(args=None):
 	eval_generator = eval_datagen.flow_from_directory(evalPath, target_size=imageSize, class_mode="categorical")
 
 	
-	optimizer = Adam(lr=learning_rate, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
+	optimizer = Adam(lr=lr, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
 	if args.new_training:
 		model = resnet.ResnetBuilder.build_resnet_50((3, *imageSize), 2)
 		model.compile(loss='mean_squared_error',
