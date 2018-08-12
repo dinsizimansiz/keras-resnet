@@ -40,7 +40,7 @@ def main(args=None):
 	
 	args = parseArgs(args)
 	data_augmentation = args.data_augmentation
-	learning_rate = int(args.lr)
+	learning_rate = float(args.lr)
 	number_of_steps = int(args.steps)
 	number_of_epochs = int(args.epochs)
 	
