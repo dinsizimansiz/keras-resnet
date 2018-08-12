@@ -90,7 +90,7 @@ def main(args=None):
 					  metrics=['acc'])
 
 		model.fit_generator(train_generator, steps_per_epoch=number_of_steps, epochs=number_of_epochs, validation_data=eval_generator,
-							validation_steps=20, callbacks=[modelCheckpoint,pushToGitCallback])#early_stopper, lr_reducer, modelCheckpoint
+							validation_steps=20, callbacks=[modelCheckpoint])#early_stopper, lr_reducer, modelCheckpoint
 	
 		
 	else:
@@ -98,7 +98,7 @@ def main(args=None):
 
 			model = load_model(os.path.join(".","checkpoint","model_ckpt.sikme"))
 			model.fit_generator(train_generator, steps_per_epoch=number_of_steps, epochs=number_of_epochs, validation_data=eval_generator,
-							validation_steps=20, callbacks=[modelCheckpoint,pushToGitCallback])#early_stopper, lr_reducer, modelCheckpoint
+							validation_steps=20, callbacks=[modelCheckpoint])#early_stopper, lr_reducer, modelCheckpoint
 		except:
 			model = resnet.ResnetBuilder.build_resnet_50((3, *imageSize), 2)
 			model.compile(loss='mean_squared_error',
@@ -106,7 +106,7 @@ def main(args=None):
 					  metrics=['acc'])
 
 			model.fit_generator(train_generator, steps_per_epoch=number_of_steps, epochs=number_of_epochs, validation_data=eval_generator,
-							validation_steps=20, callbacks=[modelCheckpoint,pushToGitCallback])#early_stopper, lr_reducer, modelCheckpoint
+							validation_steps=20, callbacks=[modelCheckpoint])#early_stopper, lr_reducer, modelCheckpoint
 	
 		
 if __name__ == "__main__":
