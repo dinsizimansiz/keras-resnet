@@ -119,7 +119,7 @@ def main(args=None):
 		model = Resnet50(weights=None,input_shape=(*imageSize,3), classes=2)
 		model.compile(loss='binary_crossentropy',
 					  optimizer=optimizer,
-					  metrics=['acc'])
+					  metrics=['accuracy'])
 
 		model.fit_generator(train_generator, steps_per_epoch=number_of_steps, epochs=number_of_epochs, validation_data=train_generator,
 							validation_steps=20, callbacks=callbacks)#early_stopper, lr_reducer, modelCheckpoint
