@@ -126,7 +126,7 @@ def main(args=None):
 							validation_steps=20, callbacks=callbacks)#early_stopper, lr_reducer, modelCheckpoint
 		except:
 			model = resnet.ResnetBuilder.build_resnet_50((3, *imageSize), 2)
-			model.compile(loss='mean_squared_error',
+			model.compile(loss='binary_crossentropy',
 					  optimizer=optimizer,
 					  metrics=['acc'])
 
