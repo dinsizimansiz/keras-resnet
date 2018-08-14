@@ -103,11 +103,12 @@ def main(args=None):
 		featurewise_std_normalization=False,  # divide inputs by std of the dataset
 		samplewise_std_normalization=False,  # divide each input by its std
 		zca_whitening=False,  # apply ZCA whitening
-		rotation_range=0,  # randomly rotate images in the range (degrees, 0 to 180)
+		rotation_range=180,  # randomly rotate images in the range (degrees, 0 to 180)
 		width_shift_range=0.,  # randomly shift images horizontally (fraction of total width)
 		height_shift_range=0.,  # randomly shift images vertically (fraction of total height)
-		horizontal_flip=False,#True,  # randomly flip images
-		vertical_flip=False)  # randomly flip images
+		horizontal_flip=True,#True,  # randomly flip images
+		vertical_flip=True,
+		)  # randomly flip images
 
 	eval_datagen = ImageDataGenerator()
 	train_generator = train_datagen.flow_from_directory(trainPath, target_size=imageSize, class_mode="binary", batch_size=batch_size)
@@ -116,7 +117,7 @@ def main(args=None):
 	
 	optimizer = Adam(lr=learning_rate, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
 	if args.new_training:
-		model = Resnet50(weights=None,input_shape=(*imageSize,3), classes=2)
+		model = Resnet50(input_shape=(*imageSize,3), classes=1)
 		model.compile(loss='binary_crossentropy',
 					  optimizer=optimizer,
 					  metrics=['accuracy'])
