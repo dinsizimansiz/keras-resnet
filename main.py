@@ -30,6 +30,7 @@ def parseArgs(args):
 	parser.add_argument("--gitpush",action="store_true")
 	parser.add_argument("--test",action="store_true")
 	parser.add_argument("--test-dir",default=None)
+	parser.add_argument("--alltrain",BaseException="store_true")
 	return parser.parse_args(args)
 
 #
@@ -85,7 +86,16 @@ def main(args=None):
 	nb_classes = 2
 	nb_epoch = 200
 	imageSize = (1200, 1600)
-
+	
+	
+	
+	if args.alltrain:
+		evalPath = os.path.join("images", "all")
+		trainPath = os.path.join("images", "all")
+	
+		
+		
+		
 	img_channels = 3
 	train_datagen = ImageDataGenerator(
 		featurewise_center=False,  # set input mean to 0 over the dataset
@@ -100,8 +110,8 @@ def main(args=None):
 		vertical_flip=False)  # randomly flip images
 
 	eval_datagen = ImageDataGenerator()
-	train_generator = train_datagen.flow_from_directory(trainPath, target_size=imageSize, class_mode="categorical", batch_size=batch_size)
-	eval_generator = eval_datagen.flow_from_directory(evalPath, target_size=imageSize, class_mode="categorical")
+	train_generator = train_datagen.flow_from_directory(trainPath, target_size=imageSize, class_mode="binary", batch_size=batch_size)
+	eval_generator = eval_datagen.flow_from_directory(evalPath, target_size=imageSize, class_mode="binary")
 
 	
 	optimizer = Adam(lr=learning_rate, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
