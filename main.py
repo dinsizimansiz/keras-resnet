@@ -143,5 +143,5 @@ def main(args=None):
 		
 if __name__ == "__main__":
 #	main(["--test","--test-dir","images"])
-	main(["--new-training"])
+#	main(["--new-training"])
 	main()
