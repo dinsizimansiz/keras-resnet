@@ -12,9 +12,9 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import ReduceLROnPlateau, CSVLogger, EarlyStopping, TensorBoard, ModelCheckpoint
 from keras.models import load_model
 from keras.optimizers import Adam
+from keras.applications import ResNet50 as Resnet50
 from sys import argv
 import numpy as np
-import resnet
 import utils
 
 
@@ -87,7 +87,7 @@ def main(args=None):
 	batch_size = 1
 	nb_classes = 2
 	nb_epoch = 200
-	imageSize = (900, 1200)
+	imageSize = (1200, 1600)
 
 	img_channels = 3
 	train_datagen = ImageDataGenerator(
@@ -109,7 +109,7 @@ def main(args=None):
 	
 	optimizer = Adam(lr=learning_rate, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
 	if args.new_training:
-		model = resnet.ResnetBuilder.build_resnet_50((3, *imageSize), 2)
+		model = Resnet50(include_top=False,input_shape=(*imageSize,3), classes=2)
 		model.compile(loss='binary_crossentropy',
 					  optimizer=optimizer,
 					  metrics=['acc'])
@@ -125,7 +125,7 @@ def main(args=None):
 			model.fit_generator(train_generator, steps_per_epoch=number_of_steps, epochs=number_of_epochs, validation_data=train_generator,
 							validation_steps=20, callbacks=callbacks)#early_stopper, lr_reducer, modelCheckpoint
 		except:
-			model = resnet.ResnetBuilder.build_resnet_50((3, *imageSize), 2)
+			model = Resnet50(include_top=False,input_shape=(*imageSize,3), classes=2)
 			model.compile(loss='binary_crossentropy',
 					  optimizer=optimizer,
 					  metrics=['acc'])
