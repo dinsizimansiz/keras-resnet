@@ -30,7 +30,7 @@ def parseArgs(args):
 	parser.add_argument("--gitpush",action="store_true")
 	parser.add_argument("--test",action="store_true")
 	parser.add_argument("--test-dir",default=None)
-	parser.add_argument("--alltrain",BaseException="store_true")
+	parser.add_argument("--alltrain",action="store_true")
 	return parser.parse_args(args)
 
 #
