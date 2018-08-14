@@ -68,9 +68,6 @@ def main(args=None):
 			utils.predict(checkpointPath,test_dir)
 			
 
-
-
-
 	if args.image_size:
 		img_rows = int(args.image_size)
 		img_cols = int(int(args.image_size) * 4 / 3)
@@ -109,7 +106,7 @@ def main(args=None):
 	
 	optimizer = Adam(lr=learning_rate, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
 	if args.new_training:
-		model = Resnet50(include_top=False,input_shape=(*imageSize,3), classes=2)
+		model = Resnet50(weights=None,input_shape=(*imageSize,3), classes=2)
 		model.compile(loss='binary_crossentropy',
 					  optimizer=optimizer,
 					  metrics=['acc'])
@@ -125,7 +122,7 @@ def main(args=None):
 			model.fit_generator(train_generator, steps_per_epoch=number_of_steps, epochs=number_of_epochs, validation_data=train_generator,
 							validation_steps=20, callbacks=callbacks)#early_stopper, lr_reducer, modelCheckpoint
 		except:
-			model = Resnet50(include_top=False,input_shape=(*imageSize,3), classes=2)
+			model = Resnet50(weights=None,input_shape=(*imageSize,3), classes=2)
 			model.compile(loss='binary_crossentropy',
 					  optimizer=optimizer,
 					  metrics=['acc'])
@@ -136,4 +133,5 @@ def main(args=None):
 		
 if __name__ == "__main__":
 #	main(["--test","--test-dir","images"])
+	main(["--new-training"])
 	main()
