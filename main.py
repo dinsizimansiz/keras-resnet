@@ -54,7 +54,7 @@ def main(args=None):
 
 	evalPath = os.path.join("images", "eval")
 	trainPath = os.path.join("images", "train")
-	checkpointPath = os.path.join("checkpoint","model_ckpt.h5py")
+	checkpointPath = os.path.join("checkpoint","model_ckpt.h5")
 	args = parseArgs(args)
 	data_augmentation = args.data_augmentation
 	learning_rate = float(args.lr)
@@ -76,7 +76,7 @@ def main(args=None):
 		img_cols = int(int(args.image_size) * 4 / 3)
 
 	pushToGitCallback = utils.createPushGitCallback()
-	modelCheckpoint = ModelCheckpoint(os.path.join("checkpoint","model_ckpt.h5py"),verbose=1)
+	modelCheckpoint = ModelCheckpoint(os.path.join("checkpoint","model_ckpt.h5"),verbose=1)
 	lr_reducer = ReduceLROnPlateau(factor=np.sqrt(0.1), cooldown=0, patience=5, min_lr=0.5e-6)
 	early_stopper = EarlyStopping(min_delta=0.00001, patience=20)
 	board = TensorBoard(log_dir=os.path.join("tensorlog"),histogram_freq=1,write_graph=True)
@@ -121,7 +121,7 @@ def main(args=None):
 	else:
 		try:
 
-			model = load_model(os.path.join("checkpoint","model_ckpt.h5py"))
+			model = load_model(os.path.join("checkpoint","model_ckpt.h5"))
 			model.fit_generator(train_generator, steps_per_epoch=number_of_steps, epochs=number_of_epochs, validation_data=train_generator,
 							validation_steps=20, callbacks=callbacks)#early_stopper, lr_reducer, modelCheckpoint
 		except:
