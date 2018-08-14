@@ -18,9 +18,9 @@ import resnet
 import utils
 
 
-def parseArgs(args):
-	parser = argParser()
 
+def parseArgs(args):
+	parser = argParser()	
 	parser.add_argument("--data-augmentation", action="store_true")
 	parser.add_argument("--image-size", default="1200")
 	parser.add_argument("--new-training",action="store_true")
@@ -28,7 +28,22 @@ def parseArgs(args):
 	parser.add_argument("--epochs",default="300")
 	parser.add_argument("--lr",default="0.00001")
 	parser.add_argument("--gitpush",action="store_true")
+	parser.add_argument("--test",action="store_true")
+	parser.add_argument("--test-dir",default=None)
 	return parser.parse_args(args)
+
+#
+#
+#
+#
+#
+# /label1/image1.jpg
+# /label2/image2.jpg
+# Outputs label1 or label2
+#
+#
+#
+#
 
 
 def main(args=None):
@@ -37,25 +52,31 @@ def main(args=None):
 	if sysArgs:
 		args = sysArgs
 
-	
+	evalPath = os.path.join("images", "eval")
+	trainPath = os.path.join("images", "train")
+	checkpointPath = os.path.join("checkpoint","model_ckpt.h5py")
 	args = parseArgs(args)
 	data_augmentation = args.data_augmentation
 	learning_rate = float(args.lr)
 	number_of_steps = int(args.steps)
 	number_of_epochs = int(args.epochs)
-	
-	
-	
+	if args.test:
+		if not args.test_dir :
+			raise Exception("Test directory is not specified.")
+		else:
+			test_dir = os.path.join(args.test_dir)
+			utils.predict(checkpointPath,test_dir)
+			
 
-	evalPath = os.path.join("images", "eval")
-	trainPath = os.path.join("images", "train")
-	
+
+
+
 	if args.image_size:
 		img_rows = int(args.image_size)
 		img_cols = int(int(args.image_size) * 4 / 3)
 
 	pushToGitCallback = utils.createPushGitCallback()
-	modelCheckpoint = ModelCheckpoint(os.path.join(".","checkpoint","model_ckpt.sikme"),verbose=1)
+	modelCheckpoint = ModelCheckpoint(os.path.join("checkpoint","model_ckpt.h5py"),verbose=1)
 	lr_reducer = ReduceLROnPlateau(factor=np.sqrt(0.1), cooldown=0, patience=5, min_lr=0.5e-6)
 	early_stopper = EarlyStopping(min_delta=0.00001, patience=20)
 	board = TensorBoard(log_dir=os.path.join("tensorlog"),histogram_freq=1,write_graph=True)
@@ -93,15 +114,15 @@ def main(args=None):
 					  optimizer=optimizer,
 					  metrics=['acc'])
 
-		model.fit_generator(train_generator, steps_per_epoch=number_of_steps, epochs=number_of_epochs, validation_data=eval_generator,
+		model.fit_generator(train_generator, steps_per_epoch=number_of_steps, epochs=number_of_epochs, validation_data=train_generator,
 							validation_steps=20, callbacks=callbacks)#early_stopper, lr_reducer, modelCheckpoint
 	
 		
 	else:
 		try:
 
-			model = load_model(os.path.join(".","checkpoint","model_ckpt.sikme"))
-			model.fit_generator(train_generator, steps_per_epoch=number_of_steps, epochs=number_of_epochs, validation_data=eval_generator,
+			model = load_model(os.path.join("checkpoint","model_ckpt.h5py"))
+			model.fit_generator(train_generator, steps_per_epoch=number_of_steps, epochs=number_of_epochs, validation_data=train_generator,
 							validation_steps=20, callbacks=callbacks)#early_stopper, lr_reducer, modelCheckpoint
 		except:
 			model = resnet.ResnetBuilder.build_resnet_50((3, *imageSize), 2)
@@ -109,9 +130,10 @@ def main(args=None):
 					  optimizer=optimizer,
 					  metrics=['acc'])
 
-			model.fit_generator(train_generator, steps_per_epoch=number_of_steps, epochs=number_of_epochs, validation_data=eval_generator,
+			model.fit_generator(train_generator, steps_per_epoch=number_of_steps, epochs=number_of_epochs, validation_data=train_generator,
 							validation_steps=20, callbacks=callbacks)#early_stopper, lr_reducer, modelCheckpoint
 	
 		
 if __name__ == "__main__":
+#	main(["--test","--test-dir","images"])
 	main()

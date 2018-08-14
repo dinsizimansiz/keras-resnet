@@ -1,13 +1,57 @@
 import os
 import cv2
 from keras.callbacks import Callback
-
+from random import choice
+from keras.models import load_model
 
 #Util is for google colab.
 
+LABELS = {0:"Rulo",1:"Normal"}
+
+def beautify_output(label):
+	return LABELS[label]
+
+
+
+def predict(modelPath,labelFoldersPath):
+	
+	
+	#os.chdir
+	#Loads pre-saved model 
+	modelBasename = os.path.basename(modelPath)
+	modelAbsPath = os.path.join(os.getcwd(), modelBasename)
+	model = load_model(modelAbsPath)
+	
+	while True:
+		imgPath = utils.getRandomImage(labelFoldersPath)
+		img = cv2.imread(imgPath)
+		prediction = model.predict(img)
+		cv2.imshow(str(prediction),img)
+		# if Property 1 is equal to -1 
+		# then window was closed by user.
+		while cv2.getWindowProperty(str(prediction),1) != -1:
+			
+
+			keyPressed = cv2.waitKey(0)
+			if keyPressed  == ord(32):
+				break
+			elif keyPressed == ord(27):
+				exit()
+			else:
+				continue
+
+	
+
+
+def getRandomImage(labelFoldersPath):
+	labelsDir = os.listdir(".")
+	chosenLabel = choice(labelsDir)
+	labeledImages = os.listdir(os.path.join(".",chosenLabel))
+	chosenImage = choice(labeledImages)
+	return os.path.join(chosenLabel,chosenImage)
+
 
 createPushGitCallback = lambda : PushGitCallback()
-  
         
     
 class PushGitCallback(Callback):
